@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+    storage:
+        build: ./storageCont/
+        container_name: storageCont
+        image: storage-image
+        volumes:
+            - /home/ubuntu/Desktop/project3/contData:/contData
+        expose: 
+            - 80
+        ports:
+            - "80:80"
+
+    zip:
+        build: ./zipCont/
+        container_name: zipCont
+        image: zip-image
+        volumes:
+            - /home/ubuntu/Desktop/project3/contData:/contData
+        expose: 
+            - 81
+        ports:
+            - "81:81"
+
+    webserver:
+        build: ./webserverCont/
+        container_name: webserverCont
+        image: webserver-image
+        volumes:
+            - /home/ubuntu/Desktop/project3/contData:/contData
+        expose: 
+            - 82
+        ports: 
+            - "82:82"
+

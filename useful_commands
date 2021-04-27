@@ -1,0 +1,8 @@
+
+sudo docker cp testfile charming_wing:/testfile
+sudo docker run -dit -P --name zip_cont -v ~/Desktop/project3/contData:/data e8
+sudo docker exec -t -i zip_cont sh
+
+ curl 127.0.0.1:81/upload?filepath=sadasd -X POST
+
+docker run --rm -it -v ~/.aws:/root/.aws -v $(pwd):/aws amazon/aws-cli s3 cp ./contData/testfile.gz s3://devproject3bucket/
