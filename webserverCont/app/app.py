@@ -2,15 +2,14 @@ from flask import Flask
 from flask import request
 
 import subprocess
-from helperfunctions import *
+#from helperfunctions import *
 import os
 
-app = Flask(__name__)
-
 def is_compressed(filename):
-	if(".gz" in filename): return True
-	return False
-'''
+    if(".gz" in filename):
+        return True
+    return False
+
 def compress(filename,flag):
     request = ""
     if(flag==0): request = "zip:81/gzip?filename="+filename
@@ -27,30 +26,37 @@ def downloadfile(filename):
     request = "storage:80/getfile?filename="+filename
     dopt = subprocess.Popen(["curl",request],stdout=subprocess.PIPE).communicate()[0]
     return dopt
-'''
+
+app = Flask(__name__)
+
+
 @app.route('/')
 def hello():
     return "This is my webserver microservice\n"
 
 
-@app.route('/upload',methods = ['POST'])
+@app.route('/upload', methods=['POST'])
 def upload():
     filepath = request.args['filepath']
-    compress = request.args['compress']
+    filepath = filepath[1:]
+    #compress = request.args['compress']
     if(is_compressed(filepath)):
-	uploadfile(filepath)
+        uploadfile(filepath)
     else:
-	copt = compress(filepath,0)
-	if("-- replaced with" not in copt): return copt
-	filepath = filepath+".gz"
-	uopt = uploadfile(filepath)
-	return uopt
+        copt = compress(filepath, 0)
+        if(b"success" not in copt):
+            return copt
+        filepath = filepath+".gz"
+        uopt = uploadfile(filepath)
+        return uopt
 
-@app.route('/getfile',methods = ['GET'])
+
+@app.route('/getfile', methods=['GET'])
 def getfile():
     filename = request.args['filename']
     dopt = downloadfile(filename)
     return dopt
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=82, debug=True)
