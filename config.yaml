@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: microservice
+spec:
+  restartPolicy: Never
+
+  volumes:
+  - name: shared-data
+    hostPath:
+      path: /home/ubuntu/Desktop/project3/contData
+
+  containers:
+
+  - name: storagecont
+    image: storage-image:latest
+    imagePullPolicy: Never
+    ports:
+    - containerPort: 80 
+    volumeMounts:
+    - name: shared-data
+      mountPath: /contData
+
+  - name: zipcont
+    image: zip-image:latest
+    imagePullPolicy: Never
+    ports:
+    - containerPort: 81
+    volumeMounts:
+    - name: shared-data
+      mountPath: /contData
+
+  - name: webservercont
+    image: webserver-image:latest
+    imagePullPolicy: Never
+    ports:
+    - containerPort: 82
+    volumeMounts:
+    - name: shared-data
+      mountPath: /contData
