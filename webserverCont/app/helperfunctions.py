@@ -1,5 +1,7 @@
 import subprocess
 import os
+
+
 def is_compressed(filename):
     if(".gz" in filename):
         return True

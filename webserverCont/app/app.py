@@ -5,27 +5,37 @@ import subprocess
 #from helperfunctions import *
 import os
 
+
 def is_compressed(filename):
     if(".gz" in filename):
         return True
     return False
 
-def compress(filename,flag):
+
+def compress(filename, flag):
     request = ""
-    if(flag==0): request = "zipcont:81/gzip?filename="+filename
-    else: request = "zipcont:81/gunzip?filename="+filename
-    output = subprocess.Popen(["curl" ,request],stdout=subprocess.PIPE).communicate()[0]
+    if(flag == 0):
+        request = "172.17.0.3:81/gzip?filename="+filename
+    else:
+        request = "172.17.0.3:81/gunzip?filename="+filename
+    output = subprocess.Popen(
+        ["curl", request], stdout=subprocess.PIPE).communicate()[0]
     return output
 
+
 def uploadfile(filepath):
-    request = "storagecont:80/upload?filepath="+filepath
-    uopt = subprocess.Popen(["curl",request],stdout=subprocess.PIPE).communicate()[0]
+    request = "172.17.0.3:80/upload?filepath="+filepath
+    uopt = subprocess.Popen(
+        ["curl", request], stdout=subprocess.PIPE).communicate()[0]
     return uopt
 
+
 def downloadfile(filename):
-    request = "storagecont:80/getfile?filename="+filename
-    dopt = subprocess.Popen(["curl",request],stdout=subprocess.PIPE).communicate()[0]
+    request = "172.17.0.3:80/getfile?filename="+filename
+    dopt = subprocess.Popen(
+        ["curl", request], stdout=subprocess.PIPE).communicate()[0]
     return dopt
+
 
 app = Flask(__name__)
 
@@ -37,11 +47,13 @@ def hello():
 
 @app.route('/upload', methods=['POST'])
 def upload():
+    cflag = request.args['cflag']
     filepath = request.args['filepath']
     filepath = filepath[1:]
     #compress = request.args['compress']
-    if(is_compressed(filepath)):
-        uploadfile(filepath)
+    if(cflag == "N" or cflag == "n"):
+        uopt = uploadfile(filepath)
+        return uopt
     else:
         copt = compress(filepath, 0)
         if(b"success" not in copt):
@@ -55,6 +67,11 @@ def upload():
 def getfile():
     filename = request.args['filename']
     dopt = downloadfile(filename)
+    if(is_compressed(filename)):
+        copt = compress(filename, 1)
+        if(b"success" not in copt):
+            return str(copt)
+        dopt = copt + b"\n" + dopt
     return dopt
 
 

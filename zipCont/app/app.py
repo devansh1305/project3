@@ -33,6 +33,7 @@ def upload():
 @app.route('/gunzip', methods=['GET'])
 def getfile():
     a = request.args['filename']
+    a = "/contData/"+a
     try:
         gunzip(a)
         return "gunzip "+a+" success"
