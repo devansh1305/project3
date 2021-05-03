@@ -1,6 +1,6 @@
 # project3
 
-zipCont -> service to compress and uncompress files
+zipCont -> service to compress and uncompress files \n
 storageCont -> service to upload and download files from s3 bucket
 webserverCont -> service to host webserver to accept user requests
 
