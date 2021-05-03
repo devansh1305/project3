@@ -3,6 +3,7 @@
 zipCont -> service to compress and uncompress files <br/>
 storageCont -> service to upload and download files from s3 bucket <br/>
 webserverCont -> service to host webserver to accept user requests <br/>
+contData -> directory to share data between host and the above three services <br/>
 
 To build docker images for each service:
 - Go into webserverCont/zipCont/storageCont and input below commands respectively:
